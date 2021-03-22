@@ -22,23 +22,27 @@ public class TypeServiceImpl implements TypeService {
     @Transactional
     @Override
     public Type saveType(Type type) {
+
         return typeRepository.save(type);
     }
 
     @Transactional
     @Override
     public Type getType(Long id) {
+
         return typeRepository.findById(id).get();
     }
 
     @Override
     public Type getTypeByName(String name) {
+
         return typeRepository.findByName(name);
     }
 
     @Transactional
     @Override
     public Page<Type> listType(Pageable pageable) {
+
         return typeRepository.findAll(pageable);
     }
 
@@ -46,7 +50,7 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public Type updateType(Long id, Type type) {
         Optional<Type> OptionalType = typeRepository.findById(id);
-        if(!OptionalType.isPresent()) {
+        if (!OptionalType.isPresent()) {
             throw new NotFoundException("不存在该类型");
         }
         Type updateType = OptionalType.get();
@@ -57,6 +61,7 @@ public class TypeServiceImpl implements TypeService {
     @Transactional
     @Override
     public void deleteType(Long id) {
+
         typeRepository.deleteById(id);
     }
 }
