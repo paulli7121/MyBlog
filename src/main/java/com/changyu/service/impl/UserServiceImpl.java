@@ -1,13 +1,14 @@
-package com.changyu.service;
+package com.changyu.service.impl;
 
 import com.changyu.dao.UserRepository;
 import com.changyu.po.User;
+import com.changyu.service.UserService;
 import com.changyu.util.MD5Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
