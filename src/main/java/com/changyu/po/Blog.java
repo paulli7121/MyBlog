@@ -26,15 +26,15 @@ public class Blog {
 
     private Integer viewCount;
 
-    private Boolean appreciationEnable;
+    private Boolean is_appreciationEnable;
 
-    private Boolean shareStatementEnable;
+    private Boolean is_shareStatementEnable;
 
-    private Boolean commentEnable;
+    private Boolean is_commentEnable;
 
-    private Boolean published;
+    private Boolean is_published;
 
-    private Boolean recommend;
+    private Boolean is_recommend;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
