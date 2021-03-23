@@ -1,6 +1,7 @@
 package com.changyu.po;
 
 import lombok.Data;
+import lombok.extern.jbosslog.JBossLog;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class Blog {
 
     private String title;
 
+    @Basic(fetch = FetchType.LAZY)
+    @Lob
     private String content;
 
     private String topPicture;
@@ -26,15 +29,15 @@ public class Blog {
 
     private Integer viewCount;
 
-    private Boolean is_appreciationEnable;
+    private Boolean appreciationEnable;
 
-    private Boolean is_shareStatementEnable;
+    private Boolean shareStatementEnable;
 
-    private Boolean is_commentEnable;
+    private Boolean commentEnable;
 
-    private Boolean is_published;
+    private Boolean published;
 
-    private Boolean is_recommend;
+    private Boolean recommend;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
