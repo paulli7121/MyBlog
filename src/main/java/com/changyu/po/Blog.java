@@ -57,4 +57,24 @@ public class Blog {
     @OneToMany(mappedBy = "blog")
     private List<Comment> comments = new ArrayList<>();
 
+    @Transient
+    private String tagIds;
+
+    public void init() {
+        this.tagIds = tagListToStr(this.getTags());
+    }
+
+    private String tagListToStr(List<Tag> tagList) {
+        StringBuffer sb = new StringBuffer();
+        if(tagList == null || tagList.isEmpty()) {
+            return sb.toString();
+        }
+        for(Tag tag : tagList) {
+            sb.append(tag.getId());
+            sb.append(",");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
 }

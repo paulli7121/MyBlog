@@ -37,8 +37,8 @@
     <div class="ui attached pointing menu">
         <div class="ui container">
             <div class="right menu">
-                <a href="#" class="item">发布</a>
-                <a href="#" class="teal active item">列表</a>
+                <a href="#" th:href="@{/admin/blogs/input}" class="item">发布</a>
+                <a href="#" th:href="@{/admin/blogs}" class="teal active item">列表</a>
             </div>
         </div>
     </div>
@@ -88,6 +88,7 @@
                     <th>标题</th>
                     <th>类型</th>
                     <th>推荐</th>
+                    <th>状态</th>
                     <th>更新时间</th>
                     <th>操作</th>
                     </thead>
@@ -100,7 +101,7 @@
                         <td th:text="${blog.published} ? '发布':'草稿'">草稿</td>
                         <td th:text="${blog.updateTime}">2019-12-25 01:00</td>
                         <td>
-                            <a href="#" th:href="@{/admin/blogs/{id}/insert(id=${blog.id})}" class="ui mini teal basic button">编辑</a>
+                            <a href="#" th:href="@{/admin/blogs/{id}/input(id=${blog.id})}" class="ui mini teal basic button">编辑</a>
                             <a href="#" th:href="@{/admin/blogs/{id}/delete(id=${blog.id})}" class="ui mini red basic button">删除</a>
                         </td>
                     </tr>
