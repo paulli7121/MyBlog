@@ -5,6 +5,7 @@ import com.changyu.exception.NotFoundException;
 import com.changyu.po.Blog;
 import com.changyu.po.Type;
 import com.changyu.service.BlogService;
+import com.changyu.util.MyBeanUtils;
 import com.changyu.vo.BlogQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +80,8 @@ public class BlogServiceImpl implements BlogService {
             throw new NotFoundException("该博客不存在");
         }
         Blog updateBlog = OptionalBlog.get();
-        BeanUtils.copyProperties(blog, updateBlog);
+        updateBlog.setUpdateTime(new Date());
+        BeanUtils.copyProperties(blog, updateBlog, MyBeanUtils.getNullPropertyNames(blog));
         return blogRepository.save(updateBlog);
     }
 

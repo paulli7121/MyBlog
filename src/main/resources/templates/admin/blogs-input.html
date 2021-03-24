@@ -106,7 +106,10 @@
                         <label class="ui teal basic label">首图</label>
                         <input type="text" name="topPicture" th:value="*{topPicture}" placeholder="首图引用地址">
                     </div>
+                </div>
 
+                <div class="required field">
+                    <textarea name="description" th:text="*{description}" placeholder="请添加博客描述" maxlength="200"></textarea>
                 </div>
 
                 <div class="inline fields">
@@ -248,6 +251,13 @@
                     rules: [{
                         type : 'empty',
                         prompt: '标题：请输入博客首图'
+                    }]
+                },
+                description : {
+                    identifier: 'description',
+                    rules: [{
+                        type : 'empty',
+                        prompt: '标题：请输入博客描述'
                     }]
                 }
             }

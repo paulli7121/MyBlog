@@ -19,6 +19,8 @@ public class Blog {
 
     private String title;
 
+    private String description;
+
     @Basic(fetch = FetchType.LAZY)
     @Lob
     private String content;
