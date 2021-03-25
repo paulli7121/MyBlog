@@ -8,7 +8,9 @@ import com.changyu.service.TagService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -53,6 +55,13 @@ public class TagServiceImpl implements TagService {
         return tagRepository.findAllById(convertStrToList(idList));
     }
 
+    @Override
+    public List<Tag> listTagTop(Integer size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "blogs.size");
+        Pageable pageable = PageRequest.of(0, size, sort);
+        return tagRepository.findTop(pageable);
+    }
+
     @Transactional
     @Override
     public Tag updateTag(Long id, Tag tag) {
@@ -73,11 +82,11 @@ public class TagServiceImpl implements TagService {
 
     private List<Long> convertStrToList(String str) {
         List<Long> result = new ArrayList<>();
-        if("".equals(str) || str == null){
+        if ("".equals(str) || str == null) {
             return result;
         }
         String[] strList = str.split(",");
-        for(String idStr : strList) {
+        for (String idStr : strList) {
             result.add(new Long(idStr));
         }
         return result;

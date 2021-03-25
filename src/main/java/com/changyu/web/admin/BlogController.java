@@ -6,9 +6,10 @@ import com.changyu.service.BlogService;
 import com.changyu.service.TagService;
 import com.changyu.service.TypeService;
 import com.changyu.vo.BlogQuery;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,8 @@ public class BlogController {
     private TagService tagService;
 
     @GetMapping("/blogs")
-    public String blogs(Pageable pageable, BlogQuery blog, Model model) {
+    public String blogs(@PageableDefault(size = 8, sort = {"updateTime"}, direction = Sort.Direction.DESC) Pageable pageable,
+                        BlogQuery blog, Model model) {
         model.addAttribute("types", typeService.listType());
         model.addAttribute("page", blogService.listBlog(pageable, blog));
         return LIST;
