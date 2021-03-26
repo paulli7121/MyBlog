@@ -41,31 +41,31 @@
            <div class="ui top attached segment">
                <div class="ui horizontal link list">
                    <dic class="item">
-                       <img src="http://unsplash.it/100/100?image=1005" alt="" class="ui avatar image">
-                       <div class="content"><a href="#" class="header">鲳鱼</a></div>
+                       <img src="http://unsplash.it/100/100?image=1005" th:src="@{${blog.user.avatar}}" alt="" class="ui avatar image">
+                       <div class="content"><a href="#" th:text="${blog.user.nickName}" class="header">鲳鱼</a></div>
                    </dic>
                    <div class="item">
-                       <i class="calendar icon"></i> 2021-03-17
+                       <i class="calendar icon"></i><span th:text="${#dates.format(blog.updateTime, 'yyyy-MM-dd')}">2021-03-17</span>
                    </div>
                    <div class="item">
-                       <i class="eye icon"></i> 123
+                       <i class="eye icon"></i><span th:text="${blog.viewCount}">123</span>
                    </div>
                </div>
            </div>
            <div class="ui attached segment">
                <!-- 图片区域 -->
-               <img src="http://unsplash.it/800/450?image=1005" alt="" class="ui fluid rounded image">
+               <img src="http://unsplash.it/800/450?image=1005" th:src="@{${blog.topPicture}}" alt="" class="ui fluid rounded image">
            </div>
            <div class="ui attached padded segment">
 
                <!-- 内容 -->
                <div class="ui right aligned basic segment">
-                   <div class="ui orange basic label">原创</div>
+                   <div class="ui orange basic label" th:text="${blog.flag}">原创</div>
                </div>
 
-               <h2 class="ui center aligned header">关于刻意练习的清单</h2>
+               <h2 class="ui center aligned header" th:text="${blog.title}">关于刻意练习的清单</h2>
                <br>
-               <div id="content" class="typo typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large">
+               <div id="content" class="typo typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large" th:utext="${blog.content}">
 
                    <pre><code class="language-css">p { color: red }</code></pre>
 
@@ -78,7 +78,7 @@
 
                <!-- 标签 -->
                <div class="m-padded-lr-responsive">
-                   <div class="ui basic teal left pointing label">方法论</div>
+                   <div class="ui basic teal left pointing label" th:each="tag : ${blog.tags}" th:text="${tag.name}">方法论</div>
                </div>
 
                <!-- 赞赏 -->
@@ -105,9 +105,9 @@
                <div class="ui middle aligned grid">
                    <div class="eleven wide column">
                        <ui class="list">
-                           <li>作者：鲳鱼</li>
-                           <li>发表时间 2021/03/18</li>
-                           <li>版权声明：自由转载</li>
+                           <li>作者：<span th:text="${blog.user.nickName}">鲳鱼</span><a href="#" th:href="@{/about}" target="_blank"> (联系作者)</a></li>
+                           <li>发表时间： <span th:text="${#dates.format(blog.user.updateTime,'yyyy-MM-dd HH:mm')}">2021/03/18</span></li>
+                           <li>版权声明：<span th:text="${blog.user.nickName}">自由转载</span></li>
                            <li>公众号转载：请在文末添加作者微信二维码</li>
                        </ui>
                    </div>
@@ -285,7 +285,7 @@
         <script src="../static/lib/qrcode/qrcode.min.js"></script>
         <script src="../static/lib/waypoint/jquery.waypoints.min.js"></script>
     <!--/*/</th:block>/*/-->
-    <script>
+    <script th:inline="javascript">
         $('.menu.toggle').click(function () {
             $('.m-item').toggleClass('m-mobile-hide');
         })
@@ -318,8 +318,10 @@
             position : 'left center'
         });
 
+        var serurl = "localhost:8080"
+        var url = /*[[@{/blog/{id}(id=${blog.id}})}]]*/"";
         var qrcode = new QRCode("qrcode", {
-            text: "http://jindo.dev.naver.com/collie",
+            text: serurl + url,
             width: 110,
             height: 110,
             colorDark : "#000000",

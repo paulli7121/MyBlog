@@ -5,6 +5,7 @@ import com.changyu.exception.NotFoundException;
 import com.changyu.po.Blog;
 import com.changyu.po.Type;
 import com.changyu.service.BlogService;
+import com.changyu.util.MarkdownUtils;
 import com.changyu.util.MyBeanUtils;
 import com.changyu.vo.BlogQuery;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +37,19 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Blog getBlog(Long id) {
         return blogRepository.findById(id).get();
+    }
+
+    @Override
+    public Blog getAndConvert(Long id) {
+        Optional<Blog> OptionalBlog = blogRepository.findById(id);
+        if(!OptionalBlog.isPresent()) {
+            throw new NotFoundException("该博客不存在");
+        }
+        Blog blog = OptionalBlog.get();
+        Blog tempBlog = new Blog();
+        BeanUtils.copyProperties(blog, tempBlog);
+        tempBlog.setContent(MarkdownUtils.markdownToHtmlExtensions(tempBlog.getContent()));
+        return tempBlog;
     }
 
     @Override

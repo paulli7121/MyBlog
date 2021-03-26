@@ -53,9 +53,9 @@
                 <div class="required field">
                     <div class="ui left labeled input">
                         <div class="ui selection compact teal basic dropdown label">
-                            <input type="hidden" value="原创" name="flag" th:value="*{flag}" >
+                            <input type="hidden" value="原创" name="flag" th:value="*{flag}">
                             <i class="dropdown icon"></i>
-                            <div class="text">原创</div>
+                            <div class="text">类型</div>
                             <div class="menu">
                                 <div class="item" data-value="原创">原创</div>
                                 <div class="item" data-value="转载">转载</div>
@@ -236,28 +236,35 @@
                     identifier: 'content',
                     rules: [{
                         type : 'empty',
-                        prompt: '标题：请输入博客内容'
+                        prompt: '内容：请输入博客内容'
                     }]
                 },
                 typeId : {
                     identifier: 'type.id',
                     rules: [{
                         type : 'empty',
-                        prompt: '标题：请输入博客分类'
+                        prompt: '分类：请输入博客分类'
                     }]
                 },
                 topPicture : {
                     identifier: 'topPicture',
                     rules: [{
                         type : 'empty',
-                        prompt: '标题：请输入博客首图'
+                        prompt: '首图：请输入博客首图'
                     }]
                 },
                 description : {
                     identifier: 'description',
                     rules: [{
                         type : 'empty',
-                        prompt: '标题：请输入博客描述'
+                        prompt: '描述：请输入博客描述'
+                    }]
+                },
+                 flag : {
+                    identifier: 'flag',
+                    rules: [{
+                        type : 'empty',
+                        prompt: '类型：请选择博客类型'
                     }]
                 }
             }
