@@ -20,6 +20,8 @@ public class Comment {
 
     private String email;
 
+    private String content;
+
     private String avatar;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -33,4 +35,6 @@ public class Comment {
 
     @ManyToOne
     private Comment parentComment;
+
+    private Boolean adminComment;
 }
