@@ -1,7 +1,5 @@
 package com.changyu.util;
 
-import sun.plugin2.message.Message;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
