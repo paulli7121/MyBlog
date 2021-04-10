@@ -2,20 +2,17 @@ package com.changyu.web.admin;
 
 import com.changyu.po.Tag;
 import com.changyu.service.TagService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -25,8 +22,12 @@ public class TagController {
     private TagService tagService;
 
     @GetMapping("/tags")
-    public String tags(@PageableDefault(size = 5, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        model.addAttribute("page", tagService.listTag(pageable));
+    public String tags(@RequestParam(defaultValue="1", value = "pageNum") Integer pageNum , Model model) {
+        String orderBy = "id desc";
+        PageHelper.startPage(pageNum, 5, orderBy);
+        List<Tag> tagList = tagService.listTags();
+        PageInfo page = new PageInfo(tagList);
+        model.addAttribute("page", page);
         return "admin/tags";
     }
 
@@ -51,8 +52,8 @@ public class TagController {
             return "admin/tags-insert";
         }
 
-        Tag t = tagService.saveTag(tag);
-        if(t == null) {
+        int res = tagService.saveTag(tag);
+        if(res == 0) {
             attributes.addFlashAttribute("message", "新增失败");
         } else {
             attributes.addFlashAttribute("message", "新增成功");
@@ -69,8 +70,8 @@ public class TagController {
             return "admin/tags-insert";
         }
 
-        Tag t = tagService.updateTag(id, tag);
-        if(t == null) {
+        int res = tagService.updateTag(id, tag);
+        if(res == 0) {
             attributes.addFlashAttribute("message", "更新失败");
         } else {
             attributes.addFlashAttribute("message", "更新成功");

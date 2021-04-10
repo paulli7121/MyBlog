@@ -1,6 +1,6 @@
 package com.changyu.service.impl;
 
-import com.changyu.dao.UserRepository;
+import com.changyu.dao.UserMapper;
 import com.changyu.po.User;
 import com.changyu.service.UserService;
 import com.changyu.util.MD5Utils;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserMapper userMapper;
 
     @Override
     public User checkUser(String userName, String password) {
-        User user = userRepository.findByUserNameAndPassword(userName, MD5Utils.code(password));
+        User user = userMapper.getUserByNameAndPassword(userName, MD5Utils.code(password));
         return user;
     }
 }

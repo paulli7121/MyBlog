@@ -1,7 +1,6 @@
 package com.changyu.po;
 
 import lombok.Data;
-import lombok.extern.jbosslog.JBossLog;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,20 +8,14 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@Entity(name = "t_blog")
-@Table
 public class Blog {
 
-    @Id
-    @GeneratedValue
     private Long id;
 
     private String title;
 
     private String description;
 
-    @Basic(fetch = FetchType.LAZY)
-    @Lob
     private String content;
 
     private String topPicture;
@@ -41,26 +34,23 @@ public class Blog {
 
     private Boolean recommend;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date updateTime;
 
-    @ManyToOne
+    // 联表查询
+    private Long typeId;
+    private Long userId;
+
+    private String tagIds;
+
     private Type type;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST})
-    private List<Tag> tags = new ArrayList<>();
-
-    @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "blog")
-    private List<Comment> comments = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
-    @Transient
-    private String tagIds;
+    private List<Comment> comments = new ArrayList<>();
 
     public void init() {
         this.tagIds = tagListToStr(this.getTags());

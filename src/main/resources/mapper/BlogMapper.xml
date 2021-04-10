@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.changyu.dao.BlogMapper">
+
+    <resultMap id="blog" type="Blog">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="content" column="content"/>
+        <result property="topPicture" column="top_picture"/>
+        <result property="flag" column="flag"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="appreciationEnable" column="appreciation_enable"/>
+        <result property="shareStatementEnable" column="share_statement_enable"/>
+        <result property="commentEnable" column="comment_enable"/>
+        <result property="published" column="published"/>
+        <result property="recommend" column="recommend"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="typeId" column="type_id"/>
+        <result property="userId" column="user_id"/>
+        <association property="type" javaType="Type">
+            <id property="id" column="typeId"/>
+            <result property="name" column="name"/>
+        </association>
+        <association property="user" javaType="User">
+            <id property="id" column="userId"/>
+            <result property="nickName" column="nick_name"/>
+            <result property="userName" column="user_name"/>
+            <result property="email" column="email"/>
+            <result property="avatar" column="avatar"/>
+            <result property="userType" column="user_type"/>
+        </association>
+        <collection property="tags" column="id" javaType="ArrayList" ofType="Tag" select="listTagsByBlogId"/>
+    </resultMap>
+
+    <select id="listTagsByBlogId" resultType="Tag">
+        select t.* from t_tag t, t_blog_tag bt where bt.bid=#{id} and bt.tid=t.id;
+    </select>
+
+    <select id="findCommentsByBlogId" resultType="Comment">
+        select c.* from t_comment c where c.blog_id=#{id};
+    </select>
+
+    <select id="findById" resultMap="blog">
+        select b.*, type.*, type.id typeId, user.*, user.id userId from t_blog b, t_type type, t_user user
+        where b.type_id=type.id and b.user_id=user.id
+        and b.id = #{id};
+    </select>
+
+    <select id="listBlogsByYear" resultMap="blog">
+        select b.*, type.*, type.id typeId, user.*, user.id userId from t_blog b, t_type type, t_user user
+        where b.type_id=type.id and b.user_id=user.id
+        and date_format(b.create_time,'%Y')=#{year};
+    </select>
+
+    <select id="listPublishedBlogs" resultMap="blog">
+        select b.*, u.*, u.id userId, t.*, t.id typeId from t_blog b, t_type t, t_user u
+        where b.user_id=u.id and b.type_id=t.id
+        and b.published = true;
+    </select>
+
+    <select id="listBlogsByTagId" resultMap="blog">
+        select b.*, tag.id, user.*, user.id userId, type.*, type.id typeId from t_blog b, t_tag tag, t_blog_tag bt, t_user user, t_type type
+        where b.user_id=user.id and b.type_id=type.id and b.id=bt.bid and tag.id=bt.tid and tag.id=#{tagId}
+        and b.published=true;
+    </select>
+
+    <select id="listBlogsByTypeId" resultMap="blog">
+        select b.*, user.*, user.id userId, type.*, type.id typeId from t_blog b, t_user user, t_type type
+        where b.user_id=user.id and b.type_id=type.id and type.id=#{typeId}
+        and b.published=true;
+    </select>
+
+    <select id="listFilteredBlogs" parameterType="Blog" resultMap="blog">
+        select b.id, b.title, b.update_time, b.published, b.recommend, b.type_id,
+               t.id, t.name
+        from t_blog b, t_type t
+        <where>
+            <if test="1 == 1">
+                b.type_id = t.id
+            </if>
+            <if test="recommend != null">
+                and b.recommend=#{recommend}
+            </if>
+            <if test="typeId != null">
+                and b.type_id=#{typeId}
+            </if>
+            <if test="title != null">
+                <bind name="filterPattern" value="'%' + title + '%'"/>
+                and b.title like #{filterPattern}
+            </if>
+        </where>
+    </select>
+
+    <select id="listQueryBlogs" parameterType="string" resultMap="blog">
+        select b.*, type.*, type.id typeId, user.*, user.id userId from t_blog b, t_type type, t_user user
+        where b.title like #{query} or b.content like #{query} or b.description like #{query}
+        and b.type_id=type.id and b.user_id=user.id
+        and b.published = true;
+    </select>
+
+    <select id="listPublishedRecommendTop" parameterType="int" resultMap="blog">
+        select b.*, type.id typeId, type.name typeName, tag.id tagId, tag.name tagName, user.id userId,
+               user.nick_name, user.user_name, user.email, user.avatar, user.user_type from
+        t_blog b left outer join t_type type on b.type_id=type.id
+        left outer join t_blog_tag bt on b.id=bt.bid
+        left outer join t_tag tag on bt.tid=tag.id,
+        t_user user where user.id=b.user_id
+        and b.published=true and b.recommend=true
+        order by b.update_time desc
+        limit #{size};
+    </select>
+
+    <insert id="saveBlog" parameterType="Blog" useGeneratedKeys="true" keyProperty="id">
+        insert into t_blog (id, title, description, content, top_picture, flag, view_count, appreciation_enable,
+                            share_statement_enable, comment_enable, published, recommend, create_time, update_time,
+                            type_id, user_id)
+                            values (#{id}, #{title}, #{description}, #{content}, #{topPicture}, #{flag},
+                                    #{viewCount}, #{appreciationEnable}, #{shareStatementEnable},
+                                    #{commentEnable}, #{published}, #{recommend}, #{createTime}, #{updateTime},
+                                    #{typeId}, #{userId});
+    </insert>
+
+    <update id="updateBlog" parameterType="Blog">
+        update t_blog set title=#{title}, description=#{description}, content=#{content}, top_picture=#{topPicture},
+                          flag=#{flag}, view_count=#{viewCount}, appreciation_enable=#{appreciationEnable},
+                          share_statement_enable=#{shareStatementEnable}, comment_enable=#{commentEnable}, published=#{published},
+                          recommend=#{recommend}, create_time=#{createTime}, update_time=#{updateTime}, type_id=#{typeId}, user_id=#{userId}
+        where id=#{id};
+    </update>
+
+    <update id="updateViewCount" parameterType="long">
+        update t_blog set view_count=view_count+1
+        where id=#{id};
+    </update>
+
+    <insert id="saveBlogTagMapping">
+        insert into t_blog_tag (bid, tid) values
+        <foreach collection="tagIdList" item="tagId" separator=",">
+            (#{blogId}, #{tagId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteById" parameterType="long">
+        delete from t_blog where id=#{id};
+    </delete>
+
+    <delete id="deleteBlogTagMappingByBlog" parameterType="long">
+        delete from t_blog_tag where bid=#{blogId};
+    </delete>
+
+    <delete id="deleteBlogTagMapping">
+        delete from t_blog_tag where bid=#{blogId} and tid in
+        <foreach collection="tagIdList" item="tagId" open="(" separator="," close=")">
+            #{tagId}
+        </foreach>
+    </delete>
+
+    <select id="countBlogs" resultType="long">
+        select count(*) from t_blog b where b.published=true;
+    </select>
+
+    <select id="findGroupYear" resultType="string">
+        select date_format(b.create_time,'%Y') year from t_blog b group by year order by year desc;
+    </select>
+
+</mapper>

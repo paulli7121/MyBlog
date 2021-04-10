@@ -40,7 +40,7 @@
         <div class="ui container">
             <div class="ui success large message">
                 <h3>Hi,</h3>
-                <p>鲳鱼，欢迎登录！</p>
+                <p th:text="|${session.user.nickName}，欢迎登录！将自动跳转至博客管理。|">鲳鱼，欢迎登录！将自动跳转至博客管理。</p>
             </div>
 
             <img src="http://unsplash.it/1000/400?image=1005" alt="" class="ui rounded bordered fluid image">
@@ -96,6 +96,8 @@
         $('.ui.dropdown').dropdown({
             on: 'hover'
         });
+
+        setTimeout('location.href="/admin/blogs"', 3000)
     </script>
 </body>
 </html>

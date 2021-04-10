@@ -1,83 +1,71 @@
 package com.changyu.service.impl;
 
-import com.changyu.dao.TagRepository;
+import com.changyu.dao.TagMapper;
 import com.changyu.exception.NotFoundException;
 import com.changyu.po.Tag;
-import com.changyu.po.Type;
 import com.changyu.service.TagService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TagServiceImpl implements TagService {
 
     @Autowired
-    private TagRepository tagRepository;
+    private TagMapper tagMapper;
 
     @Transactional
     @Override
-    public Tag saveTag(Tag tag) {
-        return tagRepository.save(tag);
+    public int saveTag(Tag tag) {
+        return tagMapper.saveTag(tag);
     }
 
     @Override
     public Tag getTag(Long id) {
-        return tagRepository.findById(id).get();
+        return tagMapper.findById(id);
     }
 
     @Override
     public Tag getTagByName(String name) {
-        return tagRepository.findByName(name);
+        return tagMapper.findByName(name);
     }
 
     @Override
-    public Page<Tag> listTag(Pageable pageable) {
-        return tagRepository.findAll(pageable);
+    public List<Tag> listTags() {
+        return tagMapper.listTags();
     }
 
     @Override
-    public List<Tag> listTag() {
-        return tagRepository.findAll();
+    public List<Tag> listTagsByIdList(String idList) {
+        return tagMapper.listTagsByIdList(convertStrToList(idList));
     }
 
-    @Override
-    public List<Tag> listTag(String idList) {
-        return tagRepository.findAllById(convertStrToList(idList));
-    }
+
 
     @Override
     public List<Tag> listTagTop(Integer size) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "blogs.size");
-        Pageable pageable = PageRequest.of(0, size, sort);
-        return tagRepository.findTop(pageable);
+        return tagMapper.listTop(size);
     }
 
     @Transactional
     @Override
-    public Tag updateTag(Long id, Tag tag) {
-        Optional<Tag> OptionalTag = tagRepository.findById(id);
-        if (!OptionalTag.isPresent()) {
-            throw new NotFoundException("不存在该类型");
+    public int updateTag(Long id, Tag tag) {
+        Tag updateTag = tagMapper.findById(id);
+        if (updateTag == null) {
+            throw new NotFoundException("不存在该标签");
         }
-        Tag updateTag = OptionalTag.get();
         BeanUtils.copyProperties(tag, updateTag);
-        return tagRepository.save(updateTag);
+        return tagMapper.updateTag(updateTag);
     }
 
     @Transactional
     @Override
     public void deleteTag(Long id) {
-        tagRepository.deleteById(id);
+        tagMapper.deleteTag(id);
     }
 
     private List<Long> convertStrToList(String str) {

@@ -2,22 +2,19 @@ package com.changyu.web.admin;
 
 import com.changyu.po.Type;
 import com.changyu.service.TypeService;
-import org.apache.logging.log4j.util.PerformanceSensitive;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -27,9 +24,12 @@ public class TypeController {
     private TypeService typeService;
 
     @GetMapping("/types")
-    public String types(@PageableDefault(size = 5, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable,
-                        Model model) {
-        model.addAttribute("page", typeService.listType(pageable));
+    public String types(@RequestParam(defaultValue="1", value = "pageNum") Integer pageNum, Model model) {
+        String orderBy = "id desc";
+        PageHelper.startPage(pageNum, 5, orderBy);
+        List<Type> typeList = typeService.listTypes();
+        PageInfo page = new PageInfo(typeList);
+        model.addAttribute("page", page);
         return "admin/types";
     }
 
@@ -54,8 +54,8 @@ public class TypeController {
             return "admin/types-input";
         }
 
-        Type t = typeService.saveType(type);
-        if(t == null){
+        int res = typeService.saveType(type);
+        if(res == 0){
             attributes.addFlashAttribute("message", "新增失败");
         } else {
             attributes.addFlashAttribute("message", "新增成功");
@@ -63,17 +63,21 @@ public class TypeController {
         return "redirect:/admin/types";
     }
 
+    @Transactional
     @PostMapping("/types/{id}")
     public String editPost(@Valid Type type, BindingResult result, @PathVariable Long id, RedirectAttributes attributes) {
+        // 若分类已存在，不允许重复添加
         if(typeService.getTypeByName(type.getName()) != null){
             result.rejectValue("name", "nameError", "不能添加重复分类");
         }
+
+        // 后端校验参数
         if(result.hasErrors()) {
             return "admin/types-input";
         }
 
-        Type t = typeService.updateType(id, type);
-        if(t == null){
+        int res = typeService.updateType(id, type);
+        if(res == 0){
             attributes.addFlashAttribute("message", "更新失败");
         } else {
             attributes.addFlashAttribute("message", "更新成功");

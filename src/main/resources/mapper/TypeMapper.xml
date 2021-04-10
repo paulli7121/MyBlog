@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.changyu.dao.TypeMapper">
+
+    <resultMap id="type" type="Type">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <collection property="blogs" javaType="ArrayList" ofType="Blog" select="listPublishedBlogsByTypeId" column="id"/>
+    </resultMap>
+
+    <select id="listPublishedBlogsByTypeId" resultType="Blog">
+        select b.* from t_blog b where b.type_id=#{id} and b.published=true;
+    </select>
+
+    <select id="findByName" resultType="Type">
+        select * from t_type
+        where name = #{name};
+    </select>
+
+    <select id="findById" resultType="Type">
+        select * from t_type
+        where id = #{id};
+    </select>
+
+    <select id="listTypes" resultType="Type">
+        select * from t_type;
+    </select>
+
+    <select id="listTop" parameterType="int" resultMap="type">
+        select t.* from t_type t, t_blog b
+        where t.id=b.type_id
+        group by t.id
+        order by count(t.id) desc
+        limit #{size};
+    </select>
+
+    <insert id="saveType" parameterType="Type">
+        insert into t_type values (#{id},#{name});
+    </insert>
+
+    <update id="updateType" parameterType="Type">
+        update t_type set name = #{name}
+        where id = #{id};
+    </update>
+
+    <delete id="deleteType" parameterType="long">
+        delete from t_type
+        where id = #{id};
+    </delete>
+
+
+</mapper>

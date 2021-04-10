@@ -1,15 +1,18 @@
 package com.changyu.web;
 
+import com.changyu.po.Blog;
 import com.changyu.service.BlogService;
 import com.changyu.service.TagService;
 import com.changyu.service.TypeService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class IndexController {
@@ -24,19 +27,28 @@ public class IndexController {
     private TagService tagService;
 
     @GetMapping("/")
-    public String index(@PageableDefault(size = 8, sort = {"updateTime"}, direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        model.addAttribute("page", blogService.listBlog(pageable));
+    public String index(@RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum, Model model) {
+        String orderByUpdateTime = "b.update_time desc";
+        PageHelper.startPage(pageNum, 8, orderByUpdateTime);
+        List<Blog> blogQueryList = blogService.listPublishedBlogs();
+        PageInfo page = new PageInfo(blogQueryList);
+        model.addAttribute("page", page);
+
         model.addAttribute("types", typeService.listTypeTop(6));
         model.addAttribute("tags", tagService.listTagTop(10));
-        model.addAttribute("recommendBlogs", blogService.listRecommendBlogTop(8));
+        model.addAttribute("recommendBlogs", blogService.listPublishedRecommendBlogTop(8));
         return "index";
     }
 
     @PostMapping("/search")
-    public String search(@PageableDefault(size = 8, sort = {"updateTime"}, direction = Sort.Direction.DESC) Pageable pageable,
+    public String search(@RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum,
                          @RequestParam String query, Model model) {
         String formatQuery = "%" + query + "%";
-        model.addAttribute("page", blogService.listBlog(pageable, formatQuery));
+        String orderByUpdateTime = "b.update_time desc";
+        PageHelper.startPage(pageNum, 8, orderByUpdateTime);
+        List<Blog> blogQueryList = blogService.listBlogs(formatQuery);
+        PageInfo page = new PageInfo(blogQueryList);
+        model.addAttribute("page", page);
         model.addAttribute("query", query);
         return "search";
     }
@@ -50,7 +62,7 @@ public class IndexController {
 
     @GetMapping("/footer/newBlog")
     public String newBlogs(Model model) {
-        model.addAttribute("newBlogs", blogService.listRecommendBlogTop(3));
+        model.addAttribute("newBlogs", blogService.listPublishedRecommendBlogTop(3));
         return "_fragments :: newBlogList";
     }
 }

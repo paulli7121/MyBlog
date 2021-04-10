@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.changyu.dao.TagMapper">
+
+    <resultMap id="tag" type="Tag">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <collection property="blogs" javaType="ArrayList" ofType="Blog" column="id" select="listPublishedBlogsByTagId"/>
+    </resultMap>
+
+    <select id="listPublishedBlogsByTagId" resultType="Blog">
+        select b.* from t_blog b, t_blog_tag bt
+        where b.id=bt.bid and bt.tid=#{id}
+        and b.published=true;
+    </select>
+
+    <select id="findByName" resultType="Tag">
+        select * from t_tag
+        where name = #{name};
+    </select>
+
+    <select id="findById" resultType="Tag">
+        select * from t_tag
+        where id = #{id};
+    </select>
+
+    <select id="listTags" resultType="Tag">
+        select * from t_tag;
+    </select>
+
+    <select id="listTop" parameterType="int" resultMap="tag">
+        select t.* from t_tag t, t_blog_tag bt
+        where t.id=bt.tid
+        group by t.id
+        order by count(t.id) desc
+        limit #{size};
+    </select>
+
+    <select id="listTagsByIdList" resultType="Tag">
+        select * from t_tag where id in
+        <foreach collection="idList" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="saveTag" parameterType="Tag">
+        insert into t_tag values (#{id},#{name});
+    </insert>
+
+    <update id="updateTag" parameterType="Tag">
+        update t_tag set name = #{name}
+        where id = #{id};
+    </update>
+
+    <delete id="deleteTag" parameterType="long">
+        delete from t_tag
+        where id = #{id};
+    </delete>
+
+
+</mapper>

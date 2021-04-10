@@ -1,13 +1,15 @@
 package com.changyu.service.impl;
 
-import com.changyu.dao.BlogRepository;
+import com.changyu.dao.BlogMapper;
+import com.changyu.dao.TagMapper;
 import com.changyu.exception.NotFoundException;
 import com.changyu.po.Blog;
+import com.changyu.po.Tag;
 import com.changyu.po.Type;
 import com.changyu.service.BlogService;
 import com.changyu.util.MarkdownUtils;
 import com.changyu.util.MyBeanUtils;
-import com.changyu.vo.BlogQuery;
+//import com.changyu.vo.BlogQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,139 +28,168 @@ import java.util.*;
 public class BlogServiceImpl implements BlogService {
 
     @Autowired
-    private BlogRepository blogRepository;
+    private BlogMapper blogMapper;
+
+    @Autowired
+    private TagMapper tagMapper;
 
     @Override
     public Blog getBlog(Long id) {
-        return blogRepository.findById(id).get();
+        return blogMapper.findById(id);
     }
 
     @Transactional
     @Override
     public Blog getAndConvert(Long id) {
-        Optional<Blog> OptionalBlog = blogRepository.findById(id);
-        if(!OptionalBlog.isPresent()) {
+        Blog blog = blogMapper.findById(id);
+        if (blog == null) {
             throw new NotFoundException("该博客不存在");
         }
-        Blog blog = OptionalBlog.get();
-        Blog tempBlog = new Blog();
-        BeanUtils.copyProperties(blog, tempBlog);
-        tempBlog.setContent(MarkdownUtils.markdownToHtmlExtensions(tempBlog.getContent()));
 
-        blogRepository.updateViewCount(id);
-        return tempBlog;
+        blog.setContent(MarkdownUtils.markdownToHtmlExtensions(blog.getContent()));
+
+        blogMapper.updateViewCount(id);
+        return blog;
     }
 
     @Override
-    public Page<Blog> listBlog(@PageableDefault(size = 5, sort = {"updateTime"}, direction = Sort.Direction.DESC) Pageable pageable, BlogQuery blog) {
-        return blogRepository.findAll(new Specification<Blog>() {
-            @Override
-            public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList();
-                if(!"".equals(blog.getTitle()) && blog.getTitle() != null) {
-                    predicates.add(criteriaBuilder.like(root.<String>get("title"), "%"+blog.getTitle()+"%"));
-                }
-                if(blog.getTypeId() != null) {
-                    predicates.add(criteriaBuilder.equal(root.<Type>get("type").get("id"), blog.getTypeId()));
-                }
-                if(blog.getRecommend() != null) {
-                    predicates.add(criteriaBuilder.equal(root.<Boolean>get("recommend"), blog.getRecommend()));
-                }
-                criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
-                return null;
-            }
-        }, pageable);
+    public List<Blog> listFilteredBlogs(Blog blog) {
+        return blogMapper.listFilteredBlogs(blog);
     }
 
     @Override
-    public Page<Blog> listBlog(Pageable pageable) {
-        return blogRepository.findAll(pageable);
+    public List<Blog> listPublishedBlogs() {
+        return blogMapper.listPublishedBlogs();
     }
 
     @Override
-    public Page<Blog> listBlog(Long tagId, Pageable pageable) {
+    public List<Blog> listBlogsByTagId(Long tagId) {
 
-        return blogRepository.findAll(new Specification<Blog>() {
-            @Override
-            public Predicate toPredicate(Root<Blog> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                Join join = root.join("tags");
-                return criteriaBuilder.equal(join.get("id"), tagId);
-            }
-        }, pageable);
+        return blogMapper.listBlogsByTagId(tagId);
     }
 
     @Override
-    public Page<Blog> listBlog(Pageable pageable, String query) {
-        return blogRepository.findByQuery(pageable, query);
+    public List<Blog> listBlogsByTypeId(Long typeId) {
+
+        return blogMapper.listBlogsByTypeId(typeId);
     }
 
     @Override
-    public List<Blog> listRecommendBlogTop(Integer size) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "updateTime");
-        Pageable pageable = PageRequest.of(0, size, sort);
-        return blogRepository.findTop(pageable);
+    public List<Blog> listBlogs(String query) {
+        return blogMapper.listQueryBlogs(query);
+    }
+
+    @Override
+    public List<Blog> listPublishedRecommendBlogTop(Integer size) {
+        return blogMapper.listPublishedRecommendTop(size);
     }
 
     @Override
     public Map<String, List<Blog>> archiveBlog() {
-        List<String> years = blogRepository.findGroupYear();
-        Map<String, List<Blog>> map = new TreeMap<>();
+        List<String> years = blogMapper.findGroupYear();
+        Map<String, List<Blog>> map = new LinkedHashMap<>();
         for(String year : years) {
-            map.put(year, blogRepository.findByYear(year));
+            map.put(year, blogMapper.listBlogsByYear(year));
         }
         return map;
     }
 
     @Override
     public Long countBlog() {
-        return blogRepository.count();
+        return blogMapper.countBlogs();
     }
 
     @Transactional
     @Override
-    public Blog saveBlog(Blog blog) {
-        if(blog.getId() == null) {
-            blog.setCreateTime(new Date());
-            blog.setUpdateTime(new Date());
-            blog.setViewCount(0);
-        } else {
-            blog.setUpdateTime(new Date());
-        }
-
-        return blogRepository.save(blog);
-    }
-
-    @Transactional
-    @Override
-    public Blog updateBlog(Long id, Blog blog) {
-        Optional<Blog> OptionalBlog = blogRepository.findById(id);
-        if(!OptionalBlog.isPresent()) {
-            throw new NotFoundException("该博客不存在");
-        }
-        Blog updateBlog = OptionalBlog.get();
-        updateBlog.setUpdateTime(new Date());
+    public int saveBlog(Blog blog) {
+        blog.setCreateTime(new Date());
+        blog.setUpdateTime(new Date());
+        blog.setViewCount(0);
 
         // checkbox若不选中传入null值
-        if(blog.getAppreciationEnable() == null) {
+        if (blog.getAppreciationEnable() == null) {
             blog.setAppreciationEnable(false);
         }
-        if(blog.getCommentEnable() == null) {
+        if (blog.getCommentEnable() == null) {
             blog.setCommentEnable(false);
         }
-        if(blog.getShareStatementEnable() == null) {
+        if (blog.getShareStatementEnable() == null) {
             blog.setShareStatementEnable(false);
         }
-        if(blog.getRecommend() == null) {
+        if (blog.getRecommend() == null) {
             blog.setRecommend(false);
         }
 
-        BeanUtils.copyProperties(blog, updateBlog, MyBeanUtils.getNullPropertyNames(blog));
-        return blogRepository.save(updateBlog);
+        // 保存blog
+        int res = blogMapper.saveBlog(blog);
+
+        // 保存blog-tag映射
+        List<String> tagIdStrList = "".equals(blog.getTagIds()) ? new ArrayList<>() : Arrays.asList(blog.getTagIds().split(","));
+        List<Long> tagIdList = new ArrayList<>();
+        for (String tagId : tagIdStrList) {
+            tagIdList.add(Long.valueOf(tagId));
+        }
+        return blogMapper.saveBlogTagMapping(blog.getId(), tagIdList);
     }
 
     @Transactional
     @Override
-    public void deleteBlog(Long id) {
-        blogRepository.deleteById(id);
+    public int updateBlog(Blog blog) {
+        Blog updateBlog = blogMapper.findById(blog.getId());
+        if (updateBlog == null) {
+            throw new NotFoundException("该博客不存在");
+        }
+        blog.setCreateTime(updateBlog.getCreateTime());
+        blog.setUpdateTime(new Date());
+        blog.setViewCount(updateBlog.getViewCount());
+
+        // checkbox若不选中传入null值
+        if (blog.getAppreciationEnable() == null) {
+            blog.setAppreciationEnable(false);
+        }
+        if (blog.getCommentEnable() == null) {
+            blog.setCommentEnable(false);
+        }
+        if (blog.getShareStatementEnable() == null) {
+            blog.setShareStatementEnable(false);
+        }
+        if (blog.getRecommend() == null) {
+            blog.setRecommend(false);
+        }
+
+        // 保存blog
+        blogMapper.updateBlog(blog);
+
+        // 保存blog-tag映射，获取需要更新的映射
+        updateBlog.init(); // 将List<Tag>转换成string赋值给tagIds
+        List<String> tagIdList = "".equals(blog.getTagIds()) ? new ArrayList<>() : Arrays.asList(blog.getTagIds().split(","));
+        List<String> previousTagIdList = "".equals(updateBlog.getTagIds()) ? new ArrayList<>() : Arrays.asList(updateBlog.getTagIds().split(","));
+        List<Long> insertIdList = new ArrayList<>();
+        List<Long> deleteIdList = new ArrayList<>();
+        for (String tagId : tagIdList) {
+            if (!previousTagIdList.contains(tagId)) {
+                insertIdList.add(Long.valueOf(tagId));
+            }
+        }
+        for (String tagId : previousTagIdList) {
+            if (!tagIdList.contains(tagId)) {
+                deleteIdList.add(Long.valueOf(tagId));
+            }
+        }
+        if (!insertIdList.isEmpty()) {
+            blogMapper.saveBlogTagMapping(blog.getId(), insertIdList);
+        }
+        if (!deleteIdList.isEmpty()) {
+            blogMapper.deleteBlogTagMapping(blog.getId(), deleteIdList);
+        }
+        return 1;
+    }
+
+    @Transactional
+    @Override
+    public int deleteBlog(Long id) {
+        blogMapper.deleteBlogTagMappingByBlog(id);
+        blogMapper.deleteById(id);
+        return 1;
     }
 }

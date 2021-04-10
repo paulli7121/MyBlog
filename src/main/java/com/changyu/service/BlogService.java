@@ -1,9 +1,6 @@
 package com.changyu.service;
 
 import com.changyu.po.Blog;
-import com.changyu.vo.BlogQuery;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -14,24 +11,26 @@ public interface BlogService {
 
     Blog getAndConvert(Long id);
 
-    Page<Blog> listBlog(Pageable pageable, BlogQuery blogQuery);
+    List<Blog> listFilteredBlogs(Blog blog);
 
-    Page<Blog> listBlog(Pageable pageable);
+    List<Blog> listPublishedBlogs();
 
-    Page<Blog> listBlog(Long tagId, Pageable pageable);
+    List<Blog> listBlogsByTagId(Long tagId);
 
-    Page<Blog> listBlog(Pageable pageable, String query);
+    List<Blog> listBlogsByTypeId(Long typeId);
 
-    List<Blog> listRecommendBlogTop(Integer size);
+    List<Blog> listBlogs(String query);
+
+    List<Blog> listPublishedRecommendBlogTop(Integer size);
 
     Map<String, List<Blog>> archiveBlog();
 
     Long countBlog();
 
-    Blog saveBlog(Blog blog);
+    int saveBlog(Blog blog);
 
-    Blog updateBlog(Long id, Blog blog);
+    int updateBlog(Blog blog);
 
-    void deleteBlog(Long id);
+    int deleteBlog(Long id);
 
 }
