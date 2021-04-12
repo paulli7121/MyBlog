@@ -12,16 +12,12 @@ logging:
   file:
     name: log/blog-prod.log
 
-mybatis:
+mybatis-plus:
   type-aliases-package: com.changyu.po
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
-
-pagehelper:
-  helper-dialect: mysql
-  reasonable: true
-  support-methods-arguments: true
+    lazy-loading-enabled: true
 
 server:
   port: 80

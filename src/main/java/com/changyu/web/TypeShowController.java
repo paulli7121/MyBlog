@@ -1,11 +1,11 @@
 package com.changyu.web;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.po.Blog;
 import com.changyu.po.Type;
 import com.changyu.service.BlogService;
 import com.changyu.service.TypeService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,13 +33,11 @@ public class TypeShowController {
             id = types.get(0).getId();
         }
 
-        String orderBy = "b.update_time desc";
-        PageHelper.startPage(pageNum, 8, orderBy);
-        List<Blog> blogQueryList = blogService.listBlogsByTypeId(id);
-        PageInfo page = new PageInfo(blogQueryList);
+        Page<Blog> page = new Page<>(pageNum,8);
+        IPage<Blog> iPage = blogService.listBlogsByTypeId(page, id);
 
         model.addAttribute("types", types);
-        model.addAttribute("page", page);
+        model.addAttribute("page", iPage);
         model.addAttribute("activeTypeId", id);
         return "types";
     }

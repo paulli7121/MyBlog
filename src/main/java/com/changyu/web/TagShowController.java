@@ -1,11 +1,11 @@
 package com.changyu.web;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.po.Blog;
 import com.changyu.po.Tag;
 import com.changyu.service.BlogService;
 import com.changyu.service.TagService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,12 +34,11 @@ public class TagShowController {
         }
 
         String orderBy = "b.update_time desc";
-        PageHelper.startPage(pageNum, 8, orderBy);
-        List<Blog> blogQueryList = blogService.listBlogsByTagId(id);
-        PageInfo page = new PageInfo(blogQueryList);
+        Page<Blog> page = new Page<>(pageNum, 8);
+        IPage<Blog> iPage = blogService.listBlogsByTagId(page, id);
 
         model.addAttribute("tags", tags);
-        model.addAttribute("page", page);
+        model.addAttribute("page", iPage);
         model.addAttribute("activeTagId", id);
         return "tags";
     }

@@ -32,20 +32,19 @@ public class CommentController {
         return "blog :: commentList";
     }
 
-//    @PostMapping("/comments")
-//    public String post(Comment comment, HttpSession session) {
-//        Long blogId = comment.getBlog().getId();
-//        comment.setBlog(blogService.getBlog(blogId));
-//        User user = (User) session.getAttribute("user");
-//        if(user != null) {
-//            comment.setAvatar(user.getAvatar());
-//            comment.setAdminComment(true);
-//            //comment.setNickName(user.getNickName());
-//        } else {
-//            comment.setAvatar(avatar);
-//            comment.setAdminComment(false);
-//        }
-//        commentService.saveComment(comment);
-//        return "redirect:/comments/" + blogId;
-//    }
+    @PostMapping("/comments")
+    public String post(Comment comment, HttpSession session) {
+        Long blogId = comment.getBlogId();
+        User user = (User) session.getAttribute("user");
+        if(user != null) {
+            comment.setAvatar(user.getAvatar());
+            comment.setAdminComment(true);
+            //comment.setNickName(user.getNickName());
+        } else {
+            comment.setAvatar(avatar);
+            comment.setAdminComment(false);
+        }
+        commentService.saveComment(comment);
+        return "redirect:/comments/" + blogId;
+    }
 }

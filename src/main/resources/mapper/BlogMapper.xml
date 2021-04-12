@@ -20,20 +20,18 @@
         <result property="updateTime" column="update_time"/>
         <result property="typeId" column="type_id"/>
         <result property="userId" column="user_id"/>
-        <association property="type" javaType="Type">
-            <id property="id" column="typeId"/>
-            <result property="name" column="name"/>
-        </association>
-        <association property="user" javaType="User">
-            <id property="id" column="userId"/>
-            <result property="nickName" column="nick_name"/>
-            <result property="userName" column="user_name"/>
-            <result property="email" column="email"/>
-            <result property="avatar" column="avatar"/>
-            <result property="userType" column="user_type"/>
-        </association>
+        <association property="type" column="type_id" javaType="Type" select="findTypeByTypeId"/>
+        <association property="user" column="user_id" javaType="User" select="findUserByUserId"/>
         <collection property="tags" column="id" javaType="ArrayList" ofType="Tag" select="listTagsByBlogId"/>
     </resultMap>
+
+    <select id="findTypeByTypeId" resultType="Type">
+        select t.* from t_type t where t.id=#{type_id};
+    </select>
+
+    <select id="findUserByUserId" resultType="User">
+        select u.* from t_user u where u.id=#{user_id};
+    </select>
 
     <select id="listTagsByBlogId" resultType="Tag">
         select t.* from t_tag t, t_blog_tag bt where bt.bid=#{id} and bt.tid=t.id;
@@ -44,33 +42,29 @@
     </select>
 
     <select id="findById" resultMap="blog">
-        select b.*, type.*, type.id typeId, user.*, user.id userId from t_blog b, t_type type, t_user user
-        where b.type_id=type.id and b.user_id=user.id
-        and b.id = #{id};
+        select b.* from t_blog b where b.id = #{id};
     </select>
 
     <select id="listBlogsByYear" resultMap="blog">
-        select b.*, type.*, type.id typeId, user.*, user.id userId from t_blog b, t_type type, t_user user
-        where b.type_id=type.id and b.user_id=user.id
-        and date_format(b.create_time,'%Y')=#{year};
+        select b.* from t_blog b where date_format(b.create_time,'%Y')=#{year};
     </select>
 
     <select id="listPublishedBlogs" resultMap="blog">
-        select b.*, u.*, u.id userId, t.*, t.id typeId from t_blog b, t_type t, t_user u
-        where b.user_id=u.id and b.type_id=t.id
-        and b.published = true;
+        select b.* from t_blog b where b.published = true
+        order by b.update_time desc
     </select>
 
     <select id="listBlogsByTagId" resultMap="blog">
-        select b.*, tag.id, user.*, user.id userId, type.*, type.id typeId from t_blog b, t_tag tag, t_blog_tag bt, t_user user, t_type type
-        where b.user_id=user.id and b.type_id=type.id and b.id=bt.bid and tag.id=bt.tid and tag.id=#{tagId}
-        and b.published=true;
+        select b.*, tag.id from t_blog b, t_tag tag, t_blog_tag bt
+        where b.id=bt.bid and tag.id=bt.tid and tag.id=#{tagId}
+        and b.published=true
+        order by b.update_time desc
     </select>
 
     <select id="listBlogsByTypeId" resultMap="blog">
-        select b.*, user.*, user.id userId, type.*, type.id typeId from t_blog b, t_user user, t_type type
-        where b.user_id=user.id and b.type_id=type.id and type.id=#{typeId}
-        and b.published=true;
+        select b.* from t_blog b where b.type_id=#{typeId}
+        and b.published=true
+        order by b.update_time desc
     </select>
 
     <select id="listFilteredBlogs" parameterType="Blog" resultMap="blog">
@@ -81,24 +75,25 @@
             <if test="1 == 1">
                 b.type_id = t.id
             </if>
-            <if test="recommend != null">
-                and b.recommend=#{recommend}
+            <if test="blog.recommend != null">
+                and b.recommend=#{blog.recommend}
             </if>
-            <if test="typeId != null">
-                and b.type_id=#{typeId}
+            <if test="blog.typeId != null">
+                and b.type_id=#{blog.typeId}
             </if>
-            <if test="title != null">
-                <bind name="filterPattern" value="'%' + title + '%'"/>
+            <if test="blog.title != null">
+                <bind name="filterPattern" value="'%' + blog.title + '%'"/>
                 and b.title like #{filterPattern}
             </if>
         </where>
+        order by b.update_time desc
     </select>
 
     <select id="listQueryBlogs" parameterType="string" resultMap="blog">
-        select b.*, type.*, type.id typeId, user.*, user.id userId from t_blog b, t_type type, t_user user
+        select b.* from t_blog b
         where b.title like #{query} or b.content like #{query} or b.description like #{query}
-        and b.type_id=type.id and b.user_id=user.id
-        and b.published = true;
+        and b.published = true
+        order by b.update_time desc
     </select>
 
     <select id="listPublishedRecommendTop" parameterType="int" resultMap="blog">

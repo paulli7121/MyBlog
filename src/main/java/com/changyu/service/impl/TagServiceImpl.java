@@ -1,5 +1,7 @@
 package com.changyu.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.dao.TagMapper;
 import com.changyu.exception.NotFoundException;
 import com.changyu.po.Tag;
@@ -35,6 +37,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public IPage<Tag> listTags(Page<?> page) {
+        return tagMapper.listTagsPage(page);
+    }
+
+    @Override
     public List<Tag> listTags() {
         return tagMapper.listTags();
     }
@@ -43,8 +50,6 @@ public class TagServiceImpl implements TagService {
     public List<Tag> listTagsByIdList(String idList) {
         return tagMapper.listTagsByIdList(convertStrToList(idList));
     }
-
-
 
     @Override
     public List<Tag> listTagTop(Integer size) {

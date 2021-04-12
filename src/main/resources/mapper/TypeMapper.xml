@@ -27,6 +27,10 @@
         select * from t_type;
     </select>
 
+    <select id="listTypesPage" resultType="Type">
+        select * from t_type order by id desc
+    </select>
+
     <select id="listTop" parameterType="int" resultMap="type">
         select t.* from t_type t, t_blog b
         where t.id=b.type_id

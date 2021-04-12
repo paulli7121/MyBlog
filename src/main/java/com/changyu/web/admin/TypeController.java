@@ -1,20 +1,18 @@
 package com.changyu.web.admin;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.po.Type;
 import com.changyu.service.TypeService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -25,11 +23,9 @@ public class TypeController {
 
     @GetMapping("/types")
     public String types(@RequestParam(defaultValue="1", value = "pageNum") Integer pageNum, Model model) {
-        String orderBy = "id desc";
-        PageHelper.startPage(pageNum, 5, orderBy);
-        List<Type> typeList = typeService.listTypes();
-        PageInfo page = new PageInfo(typeList);
-        model.addAttribute("page", page);
+        Page<Type> page = new Page<>(pageNum, 5);
+        IPage<Type> iPage = typeService.listTypes(page);
+        model.addAttribute("page", iPage);
         return "admin/types";
     }
 

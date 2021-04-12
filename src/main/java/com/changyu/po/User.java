@@ -1,5 +1,7 @@
 package com.changyu.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 @Data
 public class User {
 
+    @TableId(type= IdType.AUTO)
     private long id;
 
     private String nickName;

@@ -1,5 +1,8 @@
 package com.changyu.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.po.Blog;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -7,16 +10,16 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface BlogMapper {
+public interface BlogMapper extends BaseMapper<Blog> {
     Blog findById(@Param("id") Long id);
 
-    List<Blog> listPublishedBlogs();
+    IPage<Blog> listPublishedBlogs(Page<?> page);
 
     // 根据标题，分类和推荐查询博客
-    List<Blog> listFilteredBlogs(Blog blog);
+    IPage<Blog> listFilteredBlogs(@Param("page") Page<?> page, @Param("blog") Blog blog);
 
     //根据标题，内容和描述查询博客
-    List<Blog> listQueryBlogs(String query);
+    IPage<Blog> listQueryBlogs(Page<?> page, String query);
 
     List<Blog> listPublishedRecommendTop(@Param("size") Integer size);
 
@@ -26,9 +29,9 @@ public interface BlogMapper {
 
     List<Blog> listBlogsByYear(String year);
 
-    List<Blog> listBlogsByTagId(@Param("tagId") Long tagid);
+    IPage<Blog> listBlogsByTagId(@Param("page") Page<?> page, @Param("tagId") Long tagid);
 
-    List<Blog> listBlogsByTypeId(@Param("typeId") Long typeid);
+    IPage<Blog> listBlogsByTypeId(@Param("page") Page<?> page, @Param("typeId") Long typeid);
 
     int saveBlog(Blog blog);
 

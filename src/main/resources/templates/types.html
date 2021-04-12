@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="ui padded top attached teal segment m-mobile-lr-clear">
-                <div class="ui padded vertical segment m-padded-tb-large" th:each="blog : ${page.list}">
+                <div class="ui padded vertical segment m-padded-tb-large" th:each="blog : ${page.getRecords}">
                     <div class="ui middle aligned mobile reversed stackable grid">
                         <div class="ui eleven wide column">
                             <h3 class="ui header"><a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_black" class="m-black" th:text="${blog.title}">你真的理解什么是财富自由吗？</a></h3>
@@ -91,10 +91,10 @@
             <div class="ui bottom attached segment" th:if="${page.getPages}>1">
                 <div class="ui middle aligned two column grid">
                     <div class="column">
-                        <a href="#" th:href="@{/(page=${page.getPageNum}-1)}" th:unless="${page.isFirstPage}" class="ui mini teal basic button">上一页</a>
+                        <a href="#" th:href="@{/(page=${page.getCurrent}-1)}" th:unless="${page.getCurrent}=1" class="ui mini teal basic button">上一页</a>
                     </div>
                     <div class="right aligned column">
-                        <a href="#" th:href="@{/(page=${page.getPageNum}+1)}" th:unless="${page.isLastPage}" class="ui mini teal basic button">下一页</a>
+                        <a href="#" th:href="@{/(page=${page.getCurrent}+1)}" th:unless="${page.getCurrent}=${page.getPages}" class="ui mini teal basic button">下一页</a>
                     </div>
                 </div>
             </div>

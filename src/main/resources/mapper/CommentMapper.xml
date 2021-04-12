@@ -15,11 +15,20 @@
         <collection property="replyComments" column="id" javaType="ArrayList" ofType="comment" select="findCommentsByParentCommentId"/>
     </resultMap>
 
+    <select id="findById" resultMap="comment">
+        select * from t_comment where id=#{id};
+    </select>
+
     <select id="findCommentsByParentCommentId" resultMap="comment">
         select c.* from t_comment c where c.parent_comment_id=#{id};
     </select>
 
     <select id="getParentCommentByBlogId" parameterType="long" resultMap="comment">
-        select c.* from t_comment c where c.blog_id=#{blogId} and c.parent_comment_id is null;
+        select c.* from t_comment c where c.blog_id=#{blogId} and c.parent_comment_id=-1;
     </select>
+
+    <insert id="saveComment" parameterType="Comment">
+        insert into t_comment (id, nick_name, email, content, avatar, create_time, admin_comment, parent_comment_id, blog_id)
+        values (#{id}, #{nickName}, #{email}, #{content}, #{avatar}, #{createTime}, #{adminComment}, #{parentCommentId}, #{blogId});
+    </insert>
 </mapper>

@@ -58,7 +58,7 @@
                     <th>操作</th>
                 </thead>
                 <tbody>
-                    <tr th:each="tag, iterStat : ${page.list}">
+                    <tr th:each="tag, iterStat : ${page.getRecords}">
                         <td th:text="${iterStat.count}">1</td>
                         <td th:text="${tag.name}">刻意练习清单</td>
                         <td>
@@ -71,8 +71,8 @@
                     <tr>
                         <th colspan="6">
                             <div class="ui small pagination menu" th:if="${page.getPages}>1">
-                                <a th:href="@{/admin/tags(pageNum=${page.isHasPreviousPage()}?${page.prePage}:1)}" class="icon item" th:unless="${page.isFirstPage}">上一页</a>
-                                <a th:href="@{/admin/tags(pageNum=${page.isHasNextPage()}?${page.nextPage}:${page.getPageSize()})}" class="icon item" th:unless="${page.isLastPage}">下一页</a>
+                                <a th:href="@{/admin/tags(pageNum=${page.getCurrent}>1?${page.getCurrent}-1:1)}" class="icon item" th:unless="${page.getCurrent}=1">上一页</a>
+                                <a th:href="@{/admin/tags(pageNum=${page.getCurrent}<${page.getPages}?${page.getCurrent}+1:${page.getPages})}" class="icon item" th:unless="${page.getCurrent}=${page.getPages}">下一页</a>
                             </div>
                             <a href="#" th:href="@{/admin/tags/insert}" class="ui small right floated teal basic button">新增</a>
                         </th>

@@ -174,7 +174,7 @@
                </div>
                <div id="comment-form" class="ui form" th:if="${blog.commentEnable}">
                    <input type="hidden" name="blog.id" th:value="${blog.id}">
-                   <input type="hidden" name="parentComment.id" value="-1">
+                   <input type="hidden" name="parentCommentId" value="-1">
                    <div class="field">
                            <textarea name="content" placeholder="请输入评论信息..."></textarea>
                        </div>
@@ -366,8 +366,8 @@
 
         function postData() {
             $("#comment-container").load(/*[[@{/comments}]]*/"", {
-                "parentComment.id" : $("[name='parentComment.id']").val(),
-                "blog.id" : $("[name='blog.id']").val(),
+                "parentCommentId" : $("[name='parentCommentId']").val(),
+                "blogId" : $("[name='blog.id']").val(),
                 "nickName" : $("[name='nickName']").val(),
                 "email" : $("[name='email']").val(),
                 "content" : $("[name='content']").val(),
@@ -379,7 +379,7 @@
 
         function clearContent() {
             $("[name='content']").val('');
-            $("[name='parentComment.id']").val(-1);
+            $("[name='parentCommentId']").val(-1);
             $("[name='content']").attr("placeholder", "请输入评论信息...");
         }
 
@@ -387,7 +387,7 @@
             var commentId = $(obj).data('commentid')
             var commentNickName = $(obj).data('commentnickname')
             $("[name='content']").attr("placeholder", "@"+commentNickName).focus();
-            $("[name='parentComment.id']").val(commentId);
+            $("[name='parentCommentId']").val(commentId);
             $(window).scrollTo($('#comment-form'),500);
         }
     </script>

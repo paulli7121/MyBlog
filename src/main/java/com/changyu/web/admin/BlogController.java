@@ -1,5 +1,7 @@
 package com.changyu.web.admin;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.dao.BlogMapper;
 import com.changyu.po.Blog;
 import com.changyu.po.Tag;
@@ -7,8 +9,6 @@ import com.changyu.po.User;
 import com.changyu.service.BlogService;
 import com.changyu.service.TagService;
 import com.changyu.service.TypeService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,12 +38,10 @@ public class BlogController {
     @GetMapping("/blogs")
     public String blogs(@RequestParam(defaultValue = "1", value = "data-page") Integer pageNum,
                         Blog blog, Model model) {
-        String orderBy = "update_time desc";
-        PageHelper.startPage(pageNum, 8, orderBy);
-        List<Blog> blogQueryList = blogService.listFilteredBlogs(blog);
-        PageInfo page = new PageInfo(blogQueryList);
+        Page<Blog> page = new Page<>(pageNum, 8);
+        IPage<Blog> iPage = blogService.listFilteredBlogs(page, blog);
         model.addAttribute("types", typeService.listTypes());
-        model.addAttribute("page", page);
+        model.addAttribute("page", iPage);
         return LIST;
     }
 
@@ -51,11 +49,9 @@ public class BlogController {
     @PostMapping("/blogs/search")
     public String search(@RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum,
                          Blog blog, Model model) {
-        String orderBy = "update_time desc";
-        PageHelper.startPage(pageNum, 8, orderBy);
-        List<Blog> blogList = blogService.listFilteredBlogs(blog);
-        PageInfo page = new PageInfo(blogList);
-        model.addAttribute("page", page);
+        Page<Blog> page = new Page<>(pageNum, 8);
+        IPage<Blog> iPage = blogService.listFilteredBlogs(page, blog);
+        model.addAttribute("page", iPage);
 
         // 返回一个片段
         return "admin/blogs :: blogList";

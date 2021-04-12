@@ -1,8 +1,8 @@
 package com.changyu.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.changyu.po.Type;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public interface TypeService {
 
     Type getTypeByName(String name);
 
-//    Page<Type> listType(Pageable pageable);
+    IPage<Type> listTypes(Page<?> page);
 
     List<Type> listTypes();
 

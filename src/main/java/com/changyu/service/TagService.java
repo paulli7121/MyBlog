@@ -1,5 +1,7 @@
 package com.changyu.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.po.Tag;
 
 import java.util.List;
@@ -11,7 +13,7 @@ public interface TagService {
 
     Tag getTagByName(String name);
 
-//    Page<Tag> listTag(Pageable pageable);
+    IPage<Tag> listTags(Page<?> page);
 
     List<Tag> listTags();
 

@@ -1,27 +1,17 @@
 package com.changyu.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.dao.BlogMapper;
 import com.changyu.dao.TagMapper;
 import com.changyu.exception.NotFoundException;
 import com.changyu.po.Blog;
-import com.changyu.po.Tag;
-import com.changyu.po.Type;
 import com.changyu.service.BlogService;
 import com.changyu.util.MarkdownUtils;
-import com.changyu.util.MyBeanUtils;
-//import com.changyu.vo.BlogQuery;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.*;
 import java.util.*;
 
 @Service
@@ -53,30 +43,30 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public List<Blog> listFilteredBlogs(Blog blog) {
-        return blogMapper.listFilteredBlogs(blog);
+    public IPage<Blog> listFilteredBlogs(Page<?> page, Blog blog) {
+        return blogMapper.listFilteredBlogs(page, blog);
     }
 
     @Override
-    public List<Blog> listPublishedBlogs() {
-        return blogMapper.listPublishedBlogs();
+    public IPage<Blog> listPublishedBlogs(Page<?> page) {
+        return blogMapper.listPublishedBlogs(page);
     }
 
     @Override
-    public List<Blog> listBlogsByTagId(Long tagId) {
+    public IPage<Blog> listBlogsByTagId(Page<?> page, Long tagId) {
 
-        return blogMapper.listBlogsByTagId(tagId);
+        return blogMapper.listBlogsByTagId(page, tagId);
     }
 
     @Override
-    public List<Blog> listBlogsByTypeId(Long typeId) {
+    public IPage<Blog> listBlogsByTypeId(Page<?> page, Long typeId) {
 
-        return blogMapper.listBlogsByTypeId(typeId);
+        return blogMapper.listBlogsByTypeId(page, typeId);
     }
 
     @Override
-    public List<Blog> listBlogs(String query) {
-        return blogMapper.listQueryBlogs(query);
+    public IPage<Blog> listBlogs(Page<?> page, String query) {
+        return blogMapper.listQueryBlogs(page, query);
     }
 
     @Override

@@ -3,12 +3,10 @@ package com.changyu.service.impl;
 import com.changyu.dao.CommentMapper;
 import com.changyu.po.Comment;
 import com.changyu.service.CommentService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,25 +25,26 @@ public class CommentServiceImpl implements CommentService {
         // 为子评论设置父评论
         for(Comment comment : comments) {
             for(Comment childComment : comment.getReplyComments()) {
-                childComment.setParentComment(comment);
-                childComment.setParentCommentId(comment.getId());
+                Comment parentComment = commentMapper.findById(childComment.getParentCommentId());
+                childComment.setParentComment(parentComment);
+//                childComment.setParentCommentId(comment.getId());
             }
         }
         return comments;
     }
 
-//    @Transactional
-//    @Override
-//    public Comment saveComment(Comment comment) {
-//        Long parentCommentId = comment.getParentComment().getId();
-//        if (parentCommentId != -1) {
-//            comment.setParentComment(commentRepository.findById(parentCommentId).get());
-//        } else {
-//            comment.setParentComment(null);
-//        }
-//        comment.setCreateTime(new Date());
-//        return commentRepository.save(comment);
-//    }
+    @Transactional
+    @Override
+    public int saveComment(Comment comment) {
+        Long parentCommentId = comment.getParentCommentId();
+        if (parentCommentId != -1) {
+            comment.setParentComment(commentMapper.findById(parentCommentId));
+        } else {
+            comment.setParentComment(null);
+        }
+        comment.setCreateTime(new Date());
+        return commentMapper.saveComment(comment);
+    }
 
     private void combineChild(List<Comment> comments) {
         for(Comment comment : comments) {
@@ -57,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
 
     private void findChild(Comment comment, List<Comment> childList) {
         // 顶层节点无需放入
-        if(comment.getParentCommentId() != null) {
+        if(comment.getParentCommentId() != -1) {
             childList.add(comment);
         }
         if(comment.getReplyComments().isEmpty()) {

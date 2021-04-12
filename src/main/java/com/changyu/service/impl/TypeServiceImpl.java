@@ -1,11 +1,13 @@
 package com.changyu.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.changyu.dao.TypeMapper;
 import com.changyu.exception.NotFoundException;
 import com.changyu.po.Type;
 import com.changyu.service.TypeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,11 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public List<Type> listTypes() {
         return typeMapper.listTypes();
+    }
+
+    @Override
+    public IPage<Type> listTypes(Page<?> page) {
+        return typeMapper.listTypesPage(page);
     }
 
     @Override

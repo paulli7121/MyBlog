@@ -1,5 +1,7 @@
 package com.changyu.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.po.Blog;
 
 import java.util.List;
@@ -11,15 +13,15 @@ public interface BlogService {
 
     Blog getAndConvert(Long id);
 
-    List<Blog> listFilteredBlogs(Blog blog);
+    IPage<Blog> listFilteredBlogs(Page<?> page, Blog blog);
 
-    List<Blog> listPublishedBlogs();
+    IPage<Blog> listPublishedBlogs(Page<?> page);
 
-    List<Blog> listBlogsByTagId(Long tagId);
+    IPage<Blog> listBlogsByTagId(Page<?> page, Long tagId);
 
-    List<Blog> listBlogsByTypeId(Long typeId);
+    IPage<Blog> listBlogsByTypeId(Page<?> page, Long typeId);
 
-    List<Blog> listBlogs(String query);
+    IPage<Blog> listBlogs(Page<?> page, String query);
 
     List<Blog> listPublishedRecommendBlogTop(Integer size);
 
