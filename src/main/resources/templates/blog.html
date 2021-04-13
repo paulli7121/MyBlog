@@ -65,15 +65,15 @@
 
                <h2 class="ui center aligned header" th:text="${blog.title}">关于刻意练习的清单</h2>
                <br>
-               <div id="content" class="typo typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large" th:utext="${blog.content}">
-
-                   <pre><code class="language-css">p { color: red }</code></pre>
-
-                   <p>第二个问题：什么原因导致没有坚持下去？</p>
-                   <p>就像我去年立下的健身 flag 一样，现在也放弃了。</p>
-                   <h2 id="section1">关于刻意练习的清单</h2>
-                   <p>归根到底还是因为太懒了，锻炼多麻烦，站着不如坐着，坐着不如躺着；同时效果也不明显导致非常容易放弃。</p>
-                   <p>换到写博客这事上来也是一样的。</p>
+               <div id="editorContent" class="typo typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large">
+                    <textarea style="display:none;" th:text="${blog.content}">
+                        <pre><code class="language-css">p { color: red }</code></pre>
+                        <p>第二个问题：什么原因导致没有坚持下去？</p>
+                        <p>就像我去年立下的健身 flag 一样，现在也放弃了。</p>
+                        <h2 id="section1">关于刻意练习的清单</h2>
+                        <p>归根到底还是因为太懒了，锻炼多麻烦，站着不如坐着，坐着不如躺着；同时效果也不明显导致非常容易放弃。</p>
+                        <p>换到写博客这事上来也是一样的。</p>
+                    </textarea>
                </div>
 
                <!-- 标签 -->
@@ -177,7 +177,7 @@
                    <input type="hidden" name="parentCommentId" value="-1">
                    <div class="field">
                            <textarea name="content" placeholder="请输入评论信息..."></textarea>
-                       </div>
+                   </div>
                    <div class="fields">
                            <div class="field m-mobile-wide m-margin-bottom-small">
                                <div class="ui left icon input">
@@ -263,6 +263,14 @@
         <script src="../static/lib/qrcode/qrcode.min.js"></script>
         <script src="../static/lib/waypoint/jquery.waypoints.min.js"></script>
     <!--/*/</th:block>/*/-->
+    <script src="../static/lib/editormd/lib/marked.min.js" th:src="@{/lib/editormd/lib/marked.min.js}"></script>
+    <script src="../static/lib/editormd/lib/prettify.min.js" th:src="@{/lib/editormd/lib/prettify.min.js}"></script>
+    <script src="../static/lib/editormd/lib/raphael.min.js" th:src="@{/lib/editormd/lib/raphael.min.js}"></script>
+    <script src="../static/lib/editormd/lib/underscore.min.js" th:src="@{/lib/editormd/lib/underscore.min.js}"></script>
+    <script src="../static/lib/editormd/lib/sequence-diagram.min.js" th:src="@{/lib/editormd/lib/sequence-diagram.min.js}"></script>
+    <script src="../static/lib/editormd/lib/flowchart.min.js" th:src="@{/lib/editormd/lib/flowchart.min.js}"></script>
+    <script src="../static/lib/editormd/lib/jquery.flowchart.min.js" th:src="@{/lib/editormd/lib/jquery.flowchart.min.js}"></script>
+    <script src="../static/lib/editormd/editormd.js" th:src="@{/lib/editormd/editormd.js}"></script>
     <script th:inline="javascript">
         $('.menu.toggle').click(function () {
             $('.m-item').toggleClass('m-mobile-hide');
@@ -390,6 +398,15 @@
             $("[name='parentCommentId']").val(commentId);
             $(window).scrollTo($('#comment-form'),500);
         }
+
+        var editor;
+        $(function() {
+            editor = editormd.markdownToHTML("editorContent", {
+                htmlDecode: "style,script,iframe",
+                emoji: true,
+                taskList: true,
+            });
+        });
     </script>
 </body>
 </html>

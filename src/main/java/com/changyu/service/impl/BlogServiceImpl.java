@@ -3,11 +3,9 @@ package com.changyu.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.changyu.dao.BlogMapper;
-import com.changyu.dao.TagMapper;
 import com.changyu.exception.NotFoundException;
 import com.changyu.po.Blog;
 import com.changyu.service.BlogService;
-import com.changyu.util.MarkdownUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +17,6 @@ public class BlogServiceImpl implements BlogService {
 
     @Autowired
     private BlogMapper blogMapper;
-
-    @Autowired
-    private TagMapper tagMapper;
 
     @Override
     public Blog getBlog(Long id) {
@@ -35,8 +30,6 @@ public class BlogServiceImpl implements BlogService {
         if (blog == null) {
             throw new NotFoundException("该博客不存在");
         }
-
-        blog.setContent(MarkdownUtils.markdownToHtmlExtensions(blog.getContent()));
 
         blogMapper.updateViewCount(id);
         return blog;

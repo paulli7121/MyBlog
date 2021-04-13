@@ -2,10 +2,7 @@ package com.changyu.web.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.changyu.dao.BlogMapper;
 import com.changyu.po.Blog;
-import com.changyu.po.Tag;
-import com.changyu.po.User;
 import com.changyu.service.BlogService;
 import com.changyu.service.TagService;
 import com.changyu.service.TypeService;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
