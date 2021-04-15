@@ -29,6 +29,8 @@ public interface BlogService {
 
     Long countBlog();
 
+    int upvote(Long id);
+
     int saveBlog(Blog blog);
 
     int updateBlog(Blog blog);

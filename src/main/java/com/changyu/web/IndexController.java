@@ -56,6 +56,15 @@ public class IndexController {
         return "blog";
     }
 
+    @GetMapping("/blogs/{id}/upvote")
+    public String upvote(@PathVariable Long id, Model model) {
+        blogService.upvote(id);
+        Blog blog = blogService.getBlog(id);
+        blog.init();
+        model.addAttribute("blog", blog);
+        return "blog :: upvote";
+    }
+
     @GetMapping("/footer/newBlog")
     public String newBlogs(Model model) {
         model.addAttribute("newBlogs", blogService.listPublishedRecommendBlogTop(3));

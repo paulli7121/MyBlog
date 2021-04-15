@@ -46,4 +46,6 @@ public interface BlogMapper extends BaseMapper<Blog> {
     int deleteBlogTagMapping(@Param("blogId") Long blogId, @Param("tagIdList") List<Long> tagIdList);
 
     Long countBlogs();
+
+    int upvote(@Param("blogId") Long blogId);
 }

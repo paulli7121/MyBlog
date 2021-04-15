@@ -20,13 +20,11 @@ public class Blog {
 
     private String content;
 
-    private String topPicture;
-
     private String flag;
 
     private Integer viewCount;
 
-    private Boolean appreciationEnable;
+    private Long upvote;
 
     private Boolean shareStatementEnable;
 

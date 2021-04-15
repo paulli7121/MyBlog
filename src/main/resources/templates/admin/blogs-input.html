@@ -103,13 +103,6 @@
                 </div>
 
                 <div class="required field">
-                    <div class="ui left labeled input">
-                        <label class="ui teal basic label">首图</label>
-                        <input type="text" name="topPicture" th:value="*{topPicture}" placeholder="首图引用地址">
-                    </div>
-                </div>
-
-                <div class="required field">
                     <textarea name="description" th:text="*{description}" placeholder="请添加博客描述" maxlength="200"></textarea>
                 </div>
 
@@ -124,12 +117,6 @@
                         <div class="ui checkbox">
                             <input type="checkbox" id="shareStatementEnable" name="shareStatementEnable" th:checked="*{shareStatementEnable}" class="hidden">
                             <label for="shareStatementEnable">转载声明</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui checkbox">
-                            <input type="checkbox" id="appreciationEnable" name="appreciationEnable" th:checked="*{appreciationEnable}" class="hidden">
-                            <label for="appreciationEnable">赞赏</label>
                         </div>
                     </div>
                     <div class="field">
@@ -207,8 +194,11 @@
                 syncScrolling: "single",
                 imageUpload: true,
                 imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-                imageUploadURL:"pic",
-                path: "/lib/editormd/lib/"
+                imageUploadURL:"/saveContentImg",
+                path: "/lib/editormd/lib/",
+                onload: function() {
+                    console.log('onload', this);
+                }
             });
         })
 
@@ -251,13 +241,6 @@
                     rules: [{
                         type : 'empty',
                         prompt: '分类：请输入博客分类'
-                    }]
-                },
-                topPicture : {
-                    identifier: 'topPicture',
-                    rules: [{
-                        type : 'empty',
-                        prompt: '首图：请输入博客首图'
                     }]
                 },
                 description : {

@@ -8,10 +8,9 @@
         <result property="title" column="title"/>
         <result property="description" column="description"/>
         <result property="content" column="content"/>
-        <result property="topPicture" column="top_picture"/>
         <result property="flag" column="flag"/>
         <result property="viewCount" column="view_count"/>
-        <result property="appreciationEnable" column="appreciation_enable"/>
+        <result property="upvote" column="upvote"/>
         <result property="shareStatementEnable" column="share_statement_enable"/>
         <result property="commentEnable" column="comment_enable"/>
         <result property="published" column="published"/>
@@ -97,31 +96,26 @@
     </select>
 
     <select id="listPublishedRecommendTop" parameterType="int" resultMap="blog">
-        select b.*, type.id typeId, type.name typeName, tag.id tagId, tag.name tagName, user.id userId,
-               user.nick_name, user.user_name, user.email, user.avatar, user.user_type from
-        t_blog b left outer join t_type type on b.type_id=type.id
-        left outer join t_blog_tag bt on b.id=bt.bid
-        left outer join t_tag tag on bt.tid=tag.id,
-        t_user user where user.id=b.user_id
-        and b.published=true and b.recommend=true
+        select b.* from t_blog b
+        where b.published=true and b.recommend=true
         order by b.update_time desc
         limit #{size};
     </select>
 
     <insert id="saveBlog" parameterType="Blog" useGeneratedKeys="true" keyProperty="id">
-        insert into t_blog (id, title, description, content, top_picture, flag, view_count, appreciation_enable,
+        insert into t_blog (id, title, description, content, flag, upvote, view_count,
                             share_statement_enable, comment_enable, published, recommend, create_time, update_time,
                             type_id, user_id)
-                            values (#{id}, #{title}, #{description}, #{content}, #{topPicture}, #{flag},
-                                    #{viewCount}, #{appreciationEnable}, #{shareStatementEnable},
+                            values (#{id}, #{title}, #{description}, #{content}, #{flag}, #{upvote},
+                                    #{viewCount}, #{shareStatementEnable},
                                     #{commentEnable}, #{published}, #{recommend}, #{createTime}, #{updateTime},
                                     #{typeId}, #{userId});
     </insert>
 
     <update id="updateBlog" parameterType="Blog">
-        update t_blog set title=#{title}, description=#{description}, content=#{content}, top_picture=#{topPicture},
-                          flag=#{flag}, view_count=#{viewCount}, appreciation_enable=#{appreciationEnable},
-                          share_statement_enable=#{shareStatementEnable}, comment_enable=#{commentEnable}, published=#{published},
+        update t_blog set title=#{title}, description=#{description}, content=#{content}, upvote=#{upvote},
+                          flag=#{flag}, view_count=#{viewCount}, share_statement_enable=#{shareStatementEnable},
+                          comment_enable=#{commentEnable}, published=#{published},
                           recommend=#{recommend}, create_time=#{createTime}, update_time=#{updateTime}, type_id=#{typeId}, user_id=#{userId}
         where id=#{id};
     </update>
@@ -129,6 +123,11 @@
     <update id="updateViewCount" parameterType="long">
         update t_blog set view_count=view_count+1
         where id=#{id};
+    </update>
+
+    <update id="upvote" parameterType="long">
+        update t_blog set upvote=upvote+1
+        where id=#{blogId};
     </update>
 
     <insert id="saveBlogTagMapping">

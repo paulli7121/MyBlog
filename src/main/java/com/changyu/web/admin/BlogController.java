@@ -72,7 +72,7 @@ public class BlogController {
     }
 
     @PostMapping("/blogs")
-    public String post(Blog blog, RedirectAttributes attributes, HttpSession session) {
+    public String post(Blog blog, RedirectAttributes attributes) {
 
         int res;
         if(blog.getId() == null) {

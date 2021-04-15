@@ -22,7 +22,8 @@
                 <a href="#" class="m-item item m-mobile-hide"><i class="small tags icon"></i>标签</a>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small clone icon"></i>归档</a>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small info icon"></i>关于我</a>
-                <div class="right m-item item m-mobile-hide">
+                <div class="right m-item item m-mobile-hide stackable">
+                    <a href="#" th:href="@{/admin}" class="m-item item m-mobile-hide"><i class="small sign in alternate icon"></i>登录</a>
                     <div class="ui icon inverted transparent input">
                         <input type="text" placeholder="Search....">
                         <i class="search link icon"></i>
@@ -52,10 +53,6 @@
                    </div>
                </div>
            </div>
-           <div class="ui attached segment">
-               <!-- 图片区域 -->
-               <img src="http://unsplash.it/800/450?image=1005" th:src="@{${blog.topPicture}}" alt="" class="ui fluid rounded image">
-           </div>
            <div class="ui attached padded segment">
 
                <!-- 内容 -->
@@ -82,23 +79,9 @@
                </div>
 
                <!-- 赞赏 -->
-               <div th:if="${blog.appreciationEnable}">
-                   <div class="ui center aligned basic segment">
-                       <button id="payButton" class="ui orange basic circular button">赞赏</button>
-                   </div>
-                   <div class="ui payQR flowing popup transition hidden">
-                       <div class="ui orange basic label">
-                           <div class="ui images" style="font-size: inherit !important;">
-                               <div class="image">
-                                   <img src="../static/images/QR.png" th:src="@{/images/QR.png}" alt="" class="ui rounded bordered image" style="width: 120px">
-                                   <div>支付宝支付</div>
-                               </div>
-                               <div class="image">
-                                   <img src="../static/images/QR.png" th:src="@{/images/QR.png}" alt="" class="ui rounded bordered image" style="width: 120px">
-                                   <div>微信支付</div>
-                               </div>
-                           </div>
-                       </div>
+               <div id="upvote-container">
+                   <div class="ui center aligned basic segment" th:fragment="upvote">
+                       <button id="upvote-btn" class="ui orange basic circular button" >点赞&emsp;<span th:text="${blog.upvote}"></span></button>
                    </div>
                </div>
 
@@ -276,12 +259,6 @@
             $('.m-item').toggleClass('m-mobile-hide');
         })
 
-        $('#payButton').popup({
-            popup : $('.payQR.popup'),
-            on : 'click',
-            position : 'bottom center'
-        })
-
         tocbot.init({
             // Where to render the table of contents.
             tocSelector: '.js-toc',
@@ -361,6 +338,14 @@
         $(function () {
             $("#comment-container").load(/*[[@{/comments/{id}(id=${blog.id})}]]*/"comments/6");
         });
+
+        $("#upvote-btn").click(function () {
+            upvote();
+        });
+
+        function upvote() {
+            $("#upvote-container").load(/*[[@{/blogs/{id}/upvote(id=${blog.id})}]]*/"blogs/34/upvote");
+        }
 
         $('#commentpost-btn').click(function () {
             var validate = $('.ui.form').form('validate form');

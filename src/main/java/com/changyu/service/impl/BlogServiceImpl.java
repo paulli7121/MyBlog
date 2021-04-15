@@ -71,7 +71,7 @@ public class BlogServiceImpl implements BlogService {
     public Map<String, List<Blog>> archiveBlog() {
         List<String> years = blogMapper.findGroupYear();
         Map<String, List<Blog>> map = new LinkedHashMap<>();
-        for(String year : years) {
+        for (String year : years) {
             map.put(year, blogMapper.listBlogsByYear(year));
         }
         return map;
@@ -87,12 +87,10 @@ public class BlogServiceImpl implements BlogService {
     public int saveBlog(Blog blog) {
         blog.setCreateTime(new Date());
         blog.setUpdateTime(new Date());
+        blog.setUpvote(0L);
         blog.setViewCount(0);
 
         // checkbox若不选中传入null值
-        if (blog.getAppreciationEnable() == null) {
-            blog.setAppreciationEnable(false);
-        }
         if (blog.getCommentEnable() == null) {
             blog.setCommentEnable(false);
         }
@@ -125,11 +123,9 @@ public class BlogServiceImpl implements BlogService {
         blog.setCreateTime(updateBlog.getCreateTime());
         blog.setUpdateTime(new Date());
         blog.setViewCount(updateBlog.getViewCount());
+        blog.setUpvote(updateBlog.getUpvote());
 
         // checkbox若不选中传入null值
-        if (blog.getAppreciationEnable() == null) {
-            blog.setAppreciationEnable(false);
-        }
         if (blog.getCommentEnable() == null) {
             blog.setCommentEnable(false);
         }
@@ -174,5 +170,11 @@ public class BlogServiceImpl implements BlogService {
         blogMapper.deleteBlogTagMappingByBlog(id);
         blogMapper.deleteById(id);
         return 1;
+    }
+
+    @Transactional
+    @Override
+    public int upvote(Long id) {
+        return blogMapper.upvote(id);
     }
 }
