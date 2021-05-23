@@ -141,10 +141,6 @@
         delete from t_blog where id=#{id};
     </delete>
 
-    <delete id="deleteBlogTagMappingByBlog" parameterType="long">
-        delete from t_blog_tag where bid=#{blogId};
-    </delete>
-
     <delete id="deleteBlogTagMapping">
         delete from t_blog_tag where bid=#{blogId} and tid in
         <foreach collection="tagIdList" item="tagId" open="(" separator="," close=")">

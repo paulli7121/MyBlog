@@ -110,6 +110,11 @@ public class BlogServiceImpl implements BlogService {
         for (String tagId : tagIdStrList) {
             tagIdList.add(Long.valueOf(tagId));
         }
+
+        //若tag id list为空则不必插入
+        if(tagIdList.isEmpty()) {
+            return 1;
+        }
         return blogMapper.saveBlogTagMapping(blog.getId(), tagIdList);
     }
 
@@ -167,7 +172,6 @@ public class BlogServiceImpl implements BlogService {
     @Transactional
     @Override
     public int deleteBlog(Long id) {
-        blogMapper.deleteBlogTagMappingByBlog(id);
         blogMapper.deleteById(id);
         return 1;
     }
