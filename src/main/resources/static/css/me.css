@@ -1,5 +1,8 @@
 body {
-    background: url("../images/background.png");
+    background: url("../images/background.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
 .m-padded-mini {
@@ -102,6 +105,18 @@ body {
 }
 
 /*------------Opacity------------*/
+.m-black-opacity {
+    background: rgba(0,0,0,0.8) !important;
+}
+
+.m-white-opacity {
+    background: rgba(255,255,255,0.9) !important;
+}
+
+.m-opacity {
+    opacity: 0.9 !important;
+}
+
 .m-opacity-mini {
     opacity: 0.8 !important;
 }
@@ -156,7 +171,7 @@ body {
     color: #333 !important;
 }
 
-.m-teal {
+.m-blue {
     color: #00B5AD !important;
 }
 

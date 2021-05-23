@@ -12,7 +12,7 @@
     <nav th:replace="admin/_fragments :: adminMenu(1)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
         <div class="ui container">
             <div class="ui inverted secondary stackable menu">
-                <h2 class="ui teal header item">管理后台</h2>
+                <h2 class="ui blue header item">管理后台</h2>
                 <a href="#" class="active m-item item m-mobile-hide"><i class="small home icon"></i>博客</a>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small idea icon"></i>分类</a>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small tags icon"></i>标签</a>
@@ -36,16 +36,18 @@
     </nav>
 
     <!--中间内容-->
+    <br>
+    <br>
+    <br>
     <div class="m-container-small m-padded-tb-big">
         <div class="ui container">
             <div class="ui success large message">
                 <h3>Hi,</h3>
                 <p th:text="|${session.user.nickName}，欢迎登录！将自动跳转至博客管理。|">鲳鱼，欢迎登录！将自动跳转至博客管理。</p>
             </div>
-
-            <img src="http://unsplash.it/1000/400?image=1005" alt="" class="ui rounded bordered fluid image">
         </div>
     </div>
+    <br>
     <br>
     <br>
     <!--底部footer-->

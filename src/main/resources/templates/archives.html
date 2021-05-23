@@ -12,7 +12,7 @@
     <nav th:replace="_fragments :: menu(4)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
         <div class="ui container">
             <div class="ui inverted secondary stackable menu">
-                <h2 class="ui teal header item">Blog</h2>
+                <h2 class="ui blue header item">Blog</h2>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small home icon"></i>首页</a>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small idea icon"></i>分类</a>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small tags icon"></i>标签</a>
@@ -38,7 +38,7 @@
             <div class="ui top attached padded segment">
                 <div class="ui middle aligned two column grid">
                     <div class="column">
-                        <h3 class="ui teal header">归档</h3>
+                        <h3 class="ui blue header">归档</h3>
                     </div>
                     <div class="right aligned column">
                         共 <h2 class="ui orange header m-inline-block m-text-thin" th:text="${blogCount}"> 141 </h2> 篇博客
@@ -47,11 +47,11 @@
             </div>
             <th:block th:each="item : ${archiveMap}">
                 <h3 class="ui center aligned header" th:text="${item.key}">2020</h3>
-                <div class="ui fluid vertical menu">
+                <div class="ui fluid vertical menu m-opacity">
                     <a href="#" th:href="@{/blog/{id}(id=${blog.id})}" class="item" th:each="blog : ${item.value}">
                     <span>
-                        <i class="teal circle icon"></i><span th:text="${blog.title}">关于刻意练习的清单</span>
-                        <div class="ui teal basic left pointing label m-padded-mini" th:text="${#dates.format(blog.updateTime, 'MMMdd')}">9月03</div>
+                        <i class="blue circle icon"></i><span th:text="${blog.title}">关于刻意练习的清单</span>
+                        <div class="ui blue basic left pointing label m-padded-mini" th:text="${#dates.format(blog.updateTime, 'MMMdd')}">9月03</div>
                     </span>
                         <div class="ui orange basic left pointing label m-padded-mini" th:text="${blog.flag}">原创</div>
                     </a>

@@ -12,7 +12,7 @@
     <nav th:replace="_fragments :: menu(5)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
         <div class="ui container">
             <div class="ui inverted secondary stackable menu">
-                <h2 class="ui teal header item">Blog</h2>
+                <h2 class="ui blue header item">Blog</h2>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small home icon"></i>首页</a>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small idea icon"></i>分类</a>
                 <a href="#" class="m-item item m-mobile-hide"><i class="small tags icon"></i>标签</a>
@@ -34,36 +34,27 @@
     <!--中间内容-->
     <div class="m-container m-padded-tb-big">
         <div class="ui container">
-            <div class="ui stackable grid">
-                <div class="eleven wide column">
-                    <div class="ui segment">
-                        <img src="http://unsplash.it/800/600?image=1005" alt="" class="ui rounded image">
-                    </div>
-                </div>
-                <div class="five wide column">
-                    <div class="ui top attached segment">
+            <div class="five wide column">
+                    <div class="ui secondary attached segment">
                         <div class="ui header">关于我</div>
                     </div>
-                    <div class="ui attached segment">
-                        <p class="m-text">鲳鱼，一个正在成长的程序员</p>
-                        <p class="m-text">填充一些内容</p>
+                    <div class="ui attached segment m-opacity">
+                        <div class="ui two column grid">
+                            <div class="two wide column">
+                            </div>
+                            <div class="nine wide column">
+                                <p class="m-text">向海面上浮</p>
+                                <p class="m-text">希望这里能成为自己存放思考和积累的空间</p>
+                            </div>
+                            <div class="five wide column">
+                                <img src="/images/admin_avatar.jpeg" style="width:100px; height:100px; margin:0px;" alt="" class="ui rounded image">
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="ui attached segment">
-                        <div class="ui orange basic left pointing label">编程</div>
-                        <div class="ui orange basic left pointing label">写作</div>
-                        <div class="ui orange basic left pointing label">思考</div>
-                        <div class="ui orange basic left pointing label">运动</div>
-                    </div>
-                    <div class="ui attached segment">
-                        <div class="ui teal basic left pointing label m-margin-tb-tiny">Java</div>
-                        <div class="ui teal basic left pointing label m-margin-tb-tiny">C++</div>
-                        <div class="ui teal basic left pointing label m-margin-tb-tiny">Python</div>
-                        <div class="ui teal basic left pointing label m-margin-tb-tiny">Scala</div>
-                        <div class="ui teal basic left pointing label m-margin-tb-tiny">...</div>
-                    </div>
-                    <div class="ui bottom attached segment">
-                        <a href="#" class="ui circular icon button"><i class="github icon"></i></a>
-                        <a href="#" class="ui  wechat circular icon button"><i class="weixin icon"></i></a>
+                    <div class="ui bottom attached segment" align="center">
+                        <a href="https://github.com/paulli7121" class="ui circular icon button"><i class="github icon"></i></a>
+                        <a href="#" class="ui wechat circular icon button"><i class="weixin icon"></i></a>
                         <a href="#" class="ui qq circular icon button" data-content="1175794274" data-position="bottom center"><i class="qq icon"></i></a>
                     </div>
 
@@ -71,7 +62,6 @@
                         <img src="../static/images/QR.png" th:src="@{/images/QR.png}" class="ui rounded image" style="width: 110px">
                     </div>
                 </div>
-            </div>
         </div>
 
 
